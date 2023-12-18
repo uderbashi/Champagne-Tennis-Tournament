@@ -57,7 +57,15 @@
     </ul>
     <h1 class="text-xl">Source code:</h1>
     <p>
-      This is an open source pet project, and the source code can be found at
+      This is an open source pet project, and the source code can be found
+      <a href="https://github.com/uderbashi/Champagne-Tennis-Tournament">
+        (here)
+      </a>
+    </p>
+    <p>
+      Created with
+      <ion-icon name="logo-vue" style="color: #42b883"></ion-icon> by Usama
+      Derbashi in 2023.
     </p>
     <button
       @click="$emit('close')"
