@@ -1,3 +1,6 @@
+# unwanted project files
+public/games/*.json
+
 # Logs
 logs
 *.log
