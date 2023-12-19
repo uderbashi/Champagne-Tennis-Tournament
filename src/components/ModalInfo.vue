@@ -2,31 +2,33 @@
   <div>
     <h1 class="text-xl">About:</h1>
     <p>
-      Champagne tennis tournament is a local Slovenian tournament setup that
-      aims to increase the difference in players' strengths and create a more
-      balanced tournament setup.
+      Champagne tennis tournament is a Slovenian tournament setup that aims to
+      challenge the difference in players' strengths and create a more balanced
+      tournament setup.
     </p>
     <p class="mb-4">
-      This web-app aims at automating player pairings to allow the players and
-      documenting games that were played in the past so the players and
-      organisers can focus on what is important: having fun playing.
+      This web-app aims to automate player pairings and matches, and to document
+      games that were played in the past so the players and organisers can focus
+      on what is important: having fun playing.
     </p>
     <h2 class="text-xl">How it works:</h2>
     <ol class="list-decimal list-outside pl-5 mb-4">
       <li>
         After confirming the players the pairs for the first round are drawn
-        randomly. Each game is played until 6 (5:5 will force a tiebreak).
+        randomly with their opposnents. Each game is played until 6 (5:5 will
+        force a tiebreak).
       </li>
       <li>
-        After every match pairs collect points: losers collect as many points as
-        sets that they won; winners collect 6 + the difference. The total will
-        always be 12. (Ex: for a game that ended in 5:6 the winners collect 7
-        and the losers 5, 6:3 winners collect 9 and losers 3, 6:0 gives the
+        After every match, pairs collect points: losers collect as many points
+        as sets that they won; winners collect 6 + the difference. The total
+        will always be 12. (Ex: for a game that ended in 5:6 the winners collect
+        7 and the losers 5, 6:3 winners collect 9 and losers 3, 6:0 gives the
         winners 12 and the losers nothing)
       </li>
       <li>
         After each round pairs are drawn again, consisting of a winner and a
-        loser from the previous round. Pairs may not be repeated.
+        loser from the previous round. Pairs may not be repeated. Matches are
+        selected randomly.
       </li>
       <li>
         After enough rounds have been played, the 8 players with the highest
