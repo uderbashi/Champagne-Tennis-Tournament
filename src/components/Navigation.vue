@@ -17,18 +17,21 @@
       <div class="flex gap-3 flex-1 justify-end">
         <ion-icon
           name="add-circle"
+          title="Create game"
           style="font-size: 22px"
           class="text-tennis-offtext hover:text-tennis-text duration-150 cursor-pointer"
           @click="showModal(markRaw(ModalCreate))"
         ></ion-icon>
         <ion-icon
           name="arrow-redo-circle"
+          title="Import game"
           style="font-size: 22px"
           class="text-tennis-offtext hover:text-tennis-text duration-150 cursor-pointer"
           @click="showModal(markRaw(ModalImport))"
         ></ion-icon>
         <ion-icon
           name="information-circle"
+          title="Information"
           style="font-size: 22px"
           class="text-tennis-offtext hover:text-tennis-text duration-150 cursor-pointer"
           @click="showModal(markRaw(ModalInfo))"
