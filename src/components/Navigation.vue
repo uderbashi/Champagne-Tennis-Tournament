@@ -6,7 +6,7 @@
       <RouterLink :to="{ name: 'home' }">
         <div class="flex items-center gap-3">
           <ion-icon
-            name="tennisball-outline"
+            name="tennisball"
             style="font-size: 30px"
             class="text-tennis-text"
           ></ion-icon>
@@ -15,6 +15,13 @@
       </RouterLink>
 
       <div class="flex gap-3 flex-1 justify-end">
+        <ion-icon
+          name="reload-circle"
+          title="Reload last opened game"
+          style="font-size: 22px"
+          class="text-tennis-offtext hover:text-tennis-text duration-150 cursor-pointer"
+          @click="showModal(markRaw(ModalCreate))"
+        ></ion-icon>
         <ion-icon
           name="add-circle"
           title="Create game"
