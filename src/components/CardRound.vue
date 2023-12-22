@@ -1,7 +1,7 @@
 <template>
   <div class="flex bg-tennis-secondary mt-2 pb-4 px-4 rounded-md shadow-md">
     <div class="flex-col w-full text-white text-center">
-      <h1 class="text-xl my-3">Round <slot /></h1>
+      <h1 class="text-xl font-semibold my-3">Round <slot /></h1>
       <div class="flex w-full">
         <!-- Table of Matches with Input Scores -->
         <div class="w-3/5 border-2 border-gray-200 rounded-md shadow-md">
@@ -80,31 +80,47 @@
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      playerPoints: [
-        { name: "Player1", points: 0 },
-        { name: "Player2", points: 0 },
-        { name: "Player3", points: 0 },
-      ],
-      matches: [
-        { player1: "Player1", player2: "Player2", score: "" },
-        { player1: "Player2", player2: "Player3", score: "" },
-        { player1: "Player1", player2: "Player2", score: "" },
-        { player1: "Player2", player2: "Player3", score: "" },
-      ],
-    };
-  },
-  methods: {
-    updateScore(index, score) {
-      // Update the score in your data structure
-      this.matches[index].score = score;
+<script setup>
+import { ref } from "vue";
 
-      // You may want to update player points based on the entered score
-      // Update this.playerPoints based on your scoring logic
-    },
+const playerPoints = ref([
+  { name: "Player1", points: 0 },
+  { name: "Player2", points: 0 },
+  { name: "Player3", points: 0 },
+]);
+
+const matches = ref([
+  {
+    player1: "Player1",
+    player2: "Player2",
+    scorePlayer1: "",
+    scorePlayer2: "",
   },
+  {
+    player1: "Player2",
+    player2: "Player3",
+    scorePlayer1: "",
+    scorePlayer2: "",
+  },
+  {
+    player1: "Player1",
+    player2: "Player2",
+    scorePlayer1: "",
+    scorePlayer2: "",
+  },
+  {
+    player1: "Player2",
+    player2: "Player3",
+    scorePlayer1: "",
+    scorePlayer2: "",
+  },
+]);
+
+const updateScore = (index, player, score) => {
+  if (player === "player1") {
+    matches.value[index].scorePlayer1 = score;
+  } else {
+    matches.value[index].scorePlayer2 = score;
+  }
 };
 </script>
