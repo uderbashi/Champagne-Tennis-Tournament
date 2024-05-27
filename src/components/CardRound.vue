@@ -81,39 +81,14 @@
 </template>
 
 <script setup>
+defineProps({matches: {type: Array, default: ()=>[]}})
+
 import { ref } from "vue";
 
 const playerPoints = ref([
   { name: "Player1", points: 0 },
   { name: "Player2", points: 0 },
   { name: "Player3", points: 0 },
-]);
-
-const matches = ref([
-  {
-    player1: "Player1",
-    player2: "Player2",
-    scorePlayer1: "",
-    scorePlayer2: "",
-  },
-  {
-    player1: "Player2",
-    player2: "Player3",
-    scorePlayer1: "",
-    scorePlayer2: "",
-  },
-  {
-    player1: "Player1",
-    player2: "Player2",
-    scorePlayer1: "",
-    scorePlayer2: "",
-  },
-  {
-    player1: "Player2",
-    player2: "Player3",
-    scorePlayer1: "",
-    scorePlayer2: "",
-  },
 ]);
 
 const updateScore = (index, player, score) => {
