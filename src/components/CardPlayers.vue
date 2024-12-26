@@ -51,7 +51,6 @@
 <script setup>
 import { ref, } from "vue";
 
-defineProps({players: {type: Array, default: ()=>[]}});
 const emit = defineEmits(["emitPlayers",]);
 
 const isEditing = ref(true);
