@@ -5,8 +5,11 @@
         <CardPlayers @emitPlayers="receivePlayers"/>
       </div>  
       <div v-if="step >= ENUM_STEPS.STEP_ROUNDS">
-        <div v-for="(roundMatches, index) in matchesArr" :key="index">
-          <CardRound :matches="roundMatches">{{index + 1}}</CardRound>
+        <div v-for="(roundMatches, index) in allMatches" :key="index">
+          <CardRound
+            :matches="roundMatches" 
+            :oldScore="calculatePoints(index)"
+          >{{index + 1}}</CardRound>
         </div>
       </div>
       <div v-if="step >= ENUM_STEPS.STEP_BRACKET">
@@ -19,6 +22,9 @@
 
 <script setup>
 // ===== Imports =====
+// Common
+import { calculateTourPoints, Player, Match, getMatches } from "../common/matches.js";
+
 // Componenets
 import CardBracket from "@/components/CardBracket.vue";
 import CardPlayers from "@/components/CardPlayers.vue";
@@ -40,66 +46,43 @@ function advanceStep() {
 }
 
 // Players Data
-const players = ref([])
+const players = ref([]);
+const roundPoints = ref([]); // array of  int arrays, where every internal array contains the points for each player earned in that round
+const allMatches = ref([]);
 function receivePlayers(receivedPlayers) {
-  players.value.push(...receivedPlayers); // ... is unpacking the array into elements
+  for(let player of receivedPlayers) {
+    players.value.push(new Player(player, []));
+  }
+  roundPoints.value = new Array();
+  roundPoints.value[0] =  new Array(players.value.length).fill(0);
+
+  // copy, then shuffle the players, so we would create random first games
+  let firstRoundPlayers = players.value.slice(0);
+  // shuffle
+  for(let i = firstRoundPlayers.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [firstRoundPlayers[i], firstRoundPlayers[j]] = [firstRoundPlayers[j], firstRoundPlayers[i]];
+  }
+
+  // split
+  const split = Math.ceil(firstRoundPlayers.length / 2);
+
+  const half1 = firstRoundPlayers.slice(0, split);
+  const half2 = firstRoundPlayers.slice(split);
+
+  const res = getMatches(half1, half2);
+  allMatches.value.push(res);
+  console.log(allMatches.value);
+
   advanceStep();
 }
 
 
 // Rounds Data
-const matchesArr = ref([[
-  {
-    player1: "Player1",
-    player2: "Player2",
-    scorePlayer1: "",
-    scorePlayer2: "",
-  },
-  {
-    player1: "Player2",
-    player2: "Player3",
-    scorePlayer1: "",
-    scorePlayer2: "",
-  },
-  {
-    player1: "Player1",
-    player2: "Player2",
-    scorePlayer1: "",
-    scorePlayer2: "",
-  },
-  {
-    player1: "Player2",
-    player2: "Player3",
-    scorePlayer1: "",
-    scorePlayer2: "",
-  },
-],
-[
-  {
-    player1: "Player1",
-    player2: "Player2",
-    scorePlayer1: "",
-    scorePlayer2: "",
-  },
-  {
-    player1: "Player2",
-    player2: "Player3",
-    scorePlayer1: "",
-    scorePlayer2: "",
-  },
-  {
-    player1: "Player1",
-    player2: "Player2",
-    scorePlayer1: "",
-    scorePlayer2: "",
-  },
-  {
-    player1: "Player2",
-    player2: "Player3",
-    scorePlayer1: "",
-    scorePlayer2: "",
-  },
-]]);
+
+function calculatePoints(round) {
+  return calculateTourPoints(players.value, roundPoints.value, round + 1);
+}
 
 //Bracket data
 

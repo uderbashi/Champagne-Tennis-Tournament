@@ -21,14 +21,16 @@
                 :class="{ 'bg-tennis-primary': index % 2 === 0 }"
               >
                 <td class="p-2">
-                  {{ match.player1 }} <br />
-                  {{ match.player1 }}
+                  {{ match.team1player1.nameOfPlayer }} <br />
+                  {{ match.team1player2.nameOfPlayer }}
                 </td>
                 <td class="p-2">
+                  <!-- v-model creates a link from the input to the item -->
                   <input
                     type="text"
-                    v-model="match.scorePlayer1"
-                    @input="updateScore(index, 'player1', match.scorePlayer1)"
+                    v-model="match.team1score"
+                    :disabled="!isActive"
+                    @input="validateScore(index, true)"
                     class="w-3/4 rounded-md text-black text-center"
                     style="line-height: 200%"
                   />
@@ -36,15 +38,16 @@
                 <td class="p-2">
                   <input
                     type="text"
-                    v-model="match.scorePlayer2"
-                    @input="updateScore(index, 'player2', match.scorePlayer2)"
+                    v-model="match.team2score"
+                    :disabled="!isActive"
+                    @input="validateScore(index, false)"
                     class="w-3/4 rounded-md text-black text-center"
                     style="line-height: 200%"
                   />
                 </td>
                 <td class="p-2">
-                  {{ match.player2 }} <br />
-                  {{ match.player2 }}
+                  {{ match.team2player1.nameOfPlayer }} <br />
+                  {{ match.team2player2.nameOfPlayer }}
                 </td>
               </tr>
             </tbody>
@@ -61,41 +64,95 @@
             </thead>
             <tbody class="text-sm text-center">
               <tr
-                v-for="(player, index) in playerPoints"
+                v-for="(score, index) in oldScore"
                 :key="index"
                 :class="{ 'bg-tennis-primary': index % 2 === 0 }"
               >
                 <td class="">
-                  {{ player.name }}
+                  {{ score.player.nameOfPlayer }}
                 </td>
                 <td class="">
-                  {{ player.points }}
+                  {{ score.points }}
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
+      <div v-if="isActive" class="mt-3">
+        <span :title="confirmMessage">
+          <ion-icon
+            name="add"
+            title="Add Round"
+            style="font-size: 22px; --ionicon-stroke-width: 82px; visibility: inherit;"
+            class="text-tennis-offtext hover:text-tennis-text duration-150 cursor-pointer ml-2"
+            @click="tbd"
+          ></ion-icon>
+        </span>
+        <span :title="confirmMessage">
+          <ion-icon
+            name="trophy"
+            title="Start finals"
+            style="font-size: 22px; --ionicon-stroke-width: 82px; visibility: inherit;"
+            class="text-tennis-offtext hover:text-tennis-text duration-150 cursor-pointer ml-2"
+            :class="{'click-blocked': allValid() !== 1}"
+            @click="tbd"
+          ></ion-icon>
+        </span>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-defineProps({matches: {type: Array, default: ()=>[]}})
-
 import { ref } from "vue";
+import { Match } from "../common/matches.js";
 
-const playerPoints = ref([
-  { name: "Player1", points: 0 },
-  { name: "Player2", points: 0 },
-  { name: "Player3", points: 0 },
-]);
+const props = defineProps({
+  matches: { type: Array, default: ()=>[] },
+  oldScore: { type: Array, default: ()=>[] },
+  isActive: { type: Boolean, default: ()=>true }
+})
 
-const updateScore = (index, player, score) => {
-  if (player === "player1") {
-    matches.value[index].scorePlayer1 = score;
-  } else {
-    matches.value[index].scorePlayer2 = score;
+const confirmMessage = ref("");
+
+// validates that the scores in the game are ints between [0-6]
+function validateScore(matchID, isTeam1) {
+  let tag = isTeam1 ? "team1score" : "team2score";
+  // convert to number because the input is text
+  let score = Number(props.matches[matchID][tag]);
+
+  // convert to 0 if the input is not a number
+  if(Number.isNaN(score)) {
+    score = 0;
   }
+
+  // if the input is a decimal point, floor it
+  if(!Number.isInteger(score)) {
+    score = Math.floor(score);
+  }
+
+  // check bounds
+  if(score < 0) {
+    score = 0;
+  } else if(score > 6) {
+    score = 6;
+  }
+
+  // update the match so it would hold a numeric value rather than a string
+  props.matches[matchID][tag] = score;
 };
+
+function tbd () {
+  console.log("To be determined")
+}
+
+function allValid () {
+  if (props.matches) {
+    console.log(props.matches);
+  } else {
+    console.log("Not found");
+  }
+  return 1;
+}
 </script>
