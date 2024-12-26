@@ -1,3 +1,24 @@
+export function calculateTourPoints(players, roundPoints, untilRound) {
+    // calculate the points of each player
+    const cumulative = new Array(players.length).fill(0);
+    roundPoints.slice(0, untilRound).forEach(round => {
+        round.forEach((point, index) => {
+            cumulative[index] += point;
+        });
+    });
+
+    // create an array of objects holding th eplayers and their cumulative score
+    const playerPoints = players.map((player, index) => {
+        return {
+            player: player,
+            points: cumulative[index]
+        };
+    });
+
+    // sort it and return it
+    playerPoints.sort((a, b) => b.points - a.points);
+    return playerPoints;
+}
 
 // Required for the next algorithm.
 export class Player {
