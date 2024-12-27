@@ -60,7 +60,7 @@ const confirmMessage = ref("");
 // checks validity of player's name (empty or duplicate)
 // returns 1 if the name is valid, a muliplier of 2 if the name is empty, and of 3 if it is a duplicate
 function checkValidity(index) {
-  var ret = 1;
+  let ret = 1;
   const name = players.value[index];
 
   if(name === "") { // empty name
@@ -76,9 +76,9 @@ function checkValidity(index) {
 // returns 1 if the name is valid, a muliplier of 2 if the name is empty, of 3 if it is a duplicate, 
 // and of 5 if the number is not divisible by 4 (cant have two pais playing each other)
 function allValid() {
-  var ret = 1;
-  var msg = "";
-  for (var i = 0; i < players.value.length; i++) {
+  let ret = 1;
+  let msg = "";
+  for (let i = 0; i < players.value.length; i++) {
     ret *= checkValidity(i);
   }
   if (players.value.length % 4 !== 0) {
