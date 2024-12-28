@@ -86,6 +86,7 @@
             title="Add Round"
             style="font-size: 22px; --ionicon-stroke-width: 82px; visibility: inherit;"
             class="text-tennis-offtext hover:text-tennis-text duration-150 cursor-pointer ml-2"
+            :class="{'click-blocked': allValid() !== 1}"
             @click="tbd"
           ></ion-icon>
         </span>
@@ -148,11 +149,34 @@ function tbd () {
 }
 
 function allValid () {
-  if (props.matches) {
-    console.log(props.matches);
-  } else {
-    console.log("Not found");
+  let ret = 1; // return value
+  let msg = ""; // message
+
+  for (let match of  props.matches) {
+    let s1 = match.team1score;
+    let s2 = match.team2score;
+
+    if (s2 > s1) { // make s1 always greater than s2
+      [s1, s2] = [s2, s1];
+    }
+
+    if (s1 !== 6) {
+      ret *= 2;
+    }
+
+    if (s2 === 6) {
+      ret *= 3;
+    }
   }
-  return 1;
+
+  if (ret % 2 === 0 ) {
+    msg += "One match (or more matches) are not over\n";
+  }
+  if (ret % 3 === 0 ) {
+    msg += "One match (or more matches) are tied at 6\n";
+  }
+
+  confirmMessage.value = msg;
+  return ret;
 }
 </script>
