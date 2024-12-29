@@ -87,7 +87,7 @@
             style="font-size: 22px; --ionicon-stroke-width: 82px; visibility: inherit;"
             class="text-tennis-offtext hover:text-tennis-text duration-150 cursor-pointer ml-2"
             :class="{'click-blocked': allValid() !== 1}"
-            @click="tbd"
+            @click="triggerRound"
           ></ion-icon>
         </span>
         <span :title="confirmMessage">
@@ -97,7 +97,7 @@
             style="font-size: 22px; --ionicon-stroke-width: 82px; visibility: inherit;"
             class="text-tennis-offtext hover:text-tennis-text duration-150 cursor-pointer ml-2"
             :class="{'click-blocked': allValid() !== 1}"
-            @click="tbd"
+            @click="triggerBracket"
           ></ion-icon>
         </span>
       </div>
@@ -106,15 +106,18 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { Match } from "../common/matches.js";
 
 const props = defineProps({
   matches: { type: Array, default: ()=>[] },
   oldScore: { type: Array, default: ()=>[] },
-  isActive: { type: Boolean, default: ()=>true }
-})
+  isActive: { type: Boolean }
+});
 
+//const isActive = computed(() => props.isCardActive);
+
+const emit = defineEmits(["emitTriggerRound", "emitTriggerBracket"]);
 const confirmMessage = ref("");
 
 // validates that the scores in the game are ints between [0-6]
@@ -142,10 +145,6 @@ function validateScore(matchID, isTeam1) {
 
   // update the match so it would hold a numeric value rather than a string
   props.matches[matchID][tag] = score;
-};
-
-function tbd () {
-  console.log("To be determined")
 }
 
 function allValid () {
@@ -178,5 +177,13 @@ function allValid () {
 
   confirmMessage.value = msg;
   return ret;
+}
+
+function triggerRound () {
+  emit("emitTriggerRound");
+}
+
+function triggerBracket () {
+  emit("emitTriggerBracket");
 }
 </script>

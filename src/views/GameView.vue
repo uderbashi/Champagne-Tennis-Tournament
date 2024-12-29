@@ -7,8 +7,11 @@
       <div v-if="step >= ENUM_STEPS.STEP_ROUNDS">
         <div v-for="(roundMatches, index) in allMatches" :key="index">
           <CardRound
-            :matches="roundMatches" 
+            :matches="roundMatches"
             :oldScore="calculatePoints(index)"
+            :isActive="matchActive[index]"
+            @emitTriggerRound="triggerRound"
+            @emitTriggerBracket="triggerBracket"
           >{{index + 1}}</CardRound>
         </div>
       </div>
@@ -35,9 +38,15 @@ import SaveFAB from "@/components/SaveFAB.vue";
 import { ref } from "vue";
 
 // ===== Data ===== 
-// Constrol state
+// References
 const ENUM_STEPS = {STEP_PLAYER: 0, STEP_ROUNDS: 1, STEP_BRACKET: 2, STEP_FINISH: 3}
 const step = ref(ENUM_STEPS.STEP_PLAYER)
+const players = ref([]);
+const roundPoints = ref([]); // array of  int arrays, where every internal array contains the points for each player earned in that round
+const allMatches = ref([]); // array of match arrays
+const matchActive = ref([]); // array of booleans holding whether the match is active or not
+
+// Constrol state
 function advanceStep() {
   if (step.value === ENUM_STEPS.STEP_FINISH) {
     return;
@@ -46,9 +55,6 @@ function advanceStep() {
 }
 
 // Players Data
-const players = ref([]);
-const roundPoints = ref([]); // array of  int arrays, where every internal array contains the points for each player earned in that round
-const allMatches = ref([]);
 function receivePlayers(receivedPlayers) {
   for(let player of receivedPlayers) {
     players.value.push(new Player(player, []));
@@ -72,7 +78,7 @@ function receivePlayers(receivedPlayers) {
 
   const res = getMatches(half1, half2);
   allMatches.value.push(res);
-  console.log(allMatches.value);
+  matchActive.value.push(true); // make the added game active.
 
   advanceStep();
 }
@@ -82,6 +88,14 @@ function receivePlayers(receivedPlayers) {
 
 function calculatePoints(round) {
   return calculateTourPoints(players.value, roundPoints.value, round + 1);
+}
+
+function triggerBracket() {
+  matchActive.value[matchActive.value.length - 1] = false;
+}
+
+function triggerRound() {
+
 }
 
 //Bracket data
