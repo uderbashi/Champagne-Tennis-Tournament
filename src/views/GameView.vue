@@ -26,7 +26,7 @@
 <script setup>
 // ===== Imports =====
 // Common
-import { calculateTourPoints, Player, Match, getMatches } from "../common/matches.js";
+import { calculateTourPoints, Player, Match, getMatches, getNextRoundMatches } from "../common/matches.js";
 
 // Componenets
 import CardBracket from "@/components/CardBracket.vue";
@@ -95,7 +95,11 @@ function triggerBracket() {
 }
 
 function triggerRound() {
-
+  matchActive.value[matchActive.value.length - 1] = false;
+  let matches = getNextRoundMatches(allMatches.value.at(-1), players.value, roundPoints.value);
+  allMatches.value.push(matches);
+  matchActive.value.push(true); // make the added game active.
+  roundPoints.value.push(new Array(players.value.length).fill(0)); // add new scores to be filled
 }
 
 //Bracket data
