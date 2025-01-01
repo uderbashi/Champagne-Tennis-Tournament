@@ -118,15 +118,16 @@ function hopcroftKarp(group1, group2) {
 
 // Required for the next function.
 export class Match {
-    constructor(team1Player1, team1Player2, team2Player1, team2Player2) {
-        this.team1player1 = team1Player1;
-        this.team1player2 = team1Player2;
-        this.team2player1 = team2Player1;
-        this.team2player2 = team2Player2;
+    constructor(team1player1, team1player2, team2player1, team2player2) {
+        this.team1player1 = team1player1;
+        this.team1player2 = team1player2;
+        this.team2player1 = team2player1;
+        this.team2player2 = team2player2;
         this.team1score = 0;
         this.team2score = 0;
     }
 }
+
 /*
 winners and losers are obtained by shallow copying their entries from the main Player array
 this function returns a match object for the steps to take in.
@@ -146,4 +147,42 @@ export function getMatches(winners, losers) {
     }
 
     return matches;
+}
+
+export function getNextRoundMatches(lastRound, playerList, pointsList) {
+    let winners = []
+    let losers = []
+    for (let match of lastRound) {
+        // add the pairs so they won't be paired again
+        match.team1player1.previouslyPlayed.push(match.team1player2);
+        match.team1player2.previouslyPlayed.push(match.team1player1);
+        match.team2player1.previouslyPlayed.push(match.team2player2);
+        match.team2player2.previouslyPlayed.push(match.team2player1);
+        
+        // decide the winners and the losers and their scores
+        let scoreLoser = Math.min(match.team1score, match.team2score);
+        let scoreWinner = Math.max(match.team1score, match.team2score) + Math.abs(match.team1score - match.team2score);
+        let tempLosers = [];
+        let tempWinners = [];
+        if (match.team1score > match.team2score) {
+            tempWinners.push(match.team1player1, match.team1player2);
+            tempLosers.push(match.team2player1, match.team2player2);
+        } else {
+            tempWinners.push(match.team2player1, match.team2player2);
+            tempLosers.push(match.team1player1, match.team1player2);
+        }
+
+        // add the points to the winners and losers and add them to the main lists
+        for (let winner of tempWinners) {
+            let i = playerList.findIndex((player) => player.nameOfPlayer === winner.nameOfPlayer);
+            pointsList[pointsList.length - 1][i] = scoreWinner;
+            winners.push(winner);
+        }
+        for (let loser of tempLosers) {
+            let i = playerList.findIndex((player) => player.nameOfPlayer === loser.nameOfPlayer);
+            pointsList[pointsList.length - 1][i] = scoreLoser;
+            losers.push(loser);
+        }
+    }
+    return getMatches(winners, losers);
 }
