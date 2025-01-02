@@ -154,10 +154,10 @@ export function getNextRoundMatches(lastRound, playerList, pointsList) {
     let losers = []
     for (let match of lastRound) {
         // add the pairs so they won't be paired again
-        match.team1player1.previouslyPlayed.push(match.team1player2);
-        match.team1player2.previouslyPlayed.push(match.team1player1);
-        match.team2player1.previouslyPlayed.push(match.team2player2);
-        match.team2player2.previouslyPlayed.push(match.team2player1);
+        match.team1player1.previouslyPlayed.push(match.team1player2.nameOfPlayer);
+        match.team1player2.previouslyPlayed.push(match.team1player1.nameOfPlayer);
+        match.team2player1.previouslyPlayed.push(match.team2player2.nameOfPlayer);
+        match.team2player2.previouslyPlayed.push(match.team2player1.nameOfPlayer);
         
         // decide the winners and the losers and their scores
         let scoreLoser = Math.min(match.team1score, match.team2score);
