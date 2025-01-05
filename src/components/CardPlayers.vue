@@ -1,5 +1,5 @@
 <template>
-  <div class="flex bg-tennis-secondary mt-2 pb-4 px-4 rounded-md shadow-md">
+  <div class="flex bg-tennis-secondary my-2 pb-4 px-4 rounded-md shadow-md">
     <div class="flex-col w-full text-white text-center">
       <h1 class="text-xl font-semibold my-3">Player List</h1>
       <div
