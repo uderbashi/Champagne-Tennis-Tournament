@@ -91,8 +91,14 @@ function triggerBracket() {
 }
 
 function triggerRound() {
-  matchActive.value[matchActive.value.length - 1] = false;
   let matches = getNextRoundMatches(allMatches.value.at(-1), players.value, roundPoints.value);
+  // getNextRoundMatches returns an empty array if it could not make pairing
+  if (matches.length === 0) {
+    triggerBracket();
+    return;
+  }
+  
+  matchActive.value[matchActive.value.length - 1] = false;
   allMatches.value.push(matches);
   matchActive.value.push(true); // make the added game active.
   roundPoints.value.push(new Array(players.value.length).fill(0)); // add new scores to be filled

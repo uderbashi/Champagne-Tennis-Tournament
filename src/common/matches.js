@@ -141,6 +141,13 @@ this function returns a match object for the steps to take in.
 */
 export function getMatches(winners, losers) {
     let pairs = hopcroftKarp(winners, losers);
+
+    // if not everyone can be paired
+    for (let pair of pairs) {
+        if (pair.player1 === "NIL" || pair.player2 === "NIL") {
+            return [];
+        }
+    }
     
     // shuffle the pairs
     for(let i = pairs.length - 1; i > 0; i--) {
