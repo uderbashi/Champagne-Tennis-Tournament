@@ -26,7 +26,7 @@
 <script setup>
 // ===== Imports =====
 // Common
-import { calculateTourPoints, Player, Match, getMatches, getNextRoundMatches } from "../common/matches.js";
+import { shuffleArray, calculateTourPoints, Player, Match, getMatches, getNextRoundMatches } from "../common/matches.js";
 
 // Componenets
 import CardBracket from "@/components/CardBracket.vue";
@@ -64,11 +64,7 @@ function receivePlayers(receivedPlayers) {
 
   // copy, then shuffle the players, so we would create random first games
   let firstRoundPlayers = players.value.slice(0);
-  // shuffle
-  for(let i = firstRoundPlayers.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [firstRoundPlayers[i], firstRoundPlayers[j]] = [firstRoundPlayers[j], firstRoundPlayers[i]];
-  }
+  shuffleArray(firstRoundPlayers)
 
   // split
   const split = Math.ceil(firstRoundPlayers.length / 2);

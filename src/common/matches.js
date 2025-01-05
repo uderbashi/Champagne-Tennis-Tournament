@@ -1,3 +1,10 @@
+export function shuffleArray(array) {
+  for(let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
 export function calculateTourPoints(players, roundPoints, untilRound) {
     // calculate the points of each player
     const cumulative = new Array(players.length).fill(0);
@@ -184,5 +191,9 @@ export function getNextRoundMatches(lastRound, playerList, pointsList) {
             losers.push(loser);
         }
     }
+    
+    // shuffle and get matches
+    shuffleArray(winners);
+    shuffleArray(losers);
     return getMatches(winners, losers);
 }
