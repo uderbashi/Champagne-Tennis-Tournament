@@ -26,7 +26,7 @@
 <script setup>
 // ===== Imports =====
 // Common
-import { shuffleArray, calculateTourPoints, Player, Match, getMatches, getNextRoundMatches } from "../common/matches.js";
+import { shuffleArray, calculateTourPoints, Player, getMatches, getNextRoundMatches } from "../common/matches.js";
 
 // Componenets
 import CardBracket from "@/components/CardBracket.vue";
@@ -88,6 +88,7 @@ function calculatePoints(round) {
 
 function triggerBracket() {
   matchActive.value[matchActive.value.length - 1] = false;
+  advanceStep();
 }
 
 function triggerRound() {

@@ -87,6 +87,9 @@ function allValid() {
   if (players.value.length === 0) {
     ret *= 7;
   }
+  if (players.value.length < 8) {
+    ret *= 11;
+  }
 
   if (ret % 2 === 0 ) {
     msg += "Empty player names are not allowed. (check red players)\n";
@@ -99,6 +102,8 @@ function allValid() {
   }
   if (ret % 7 === 0 ) {
     msg += "There are no players\n";
+  }if (ret % 11 === 0 ) {
+    msg += "There are not enough players for the finals (the players are less than 8)\n";
   }
   confirmMessage.value = msg;
   return ret;
