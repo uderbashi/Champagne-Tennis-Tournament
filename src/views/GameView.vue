@@ -19,6 +19,7 @@
         <CardBracket 
           :matches="bracketMatches" 
           :isActive="step !== ENUM_STEPS.STEP_FINISH"
+          @emitEnd="endTournament"
         />
       </div>
     </div>
@@ -113,4 +114,7 @@ function triggerRound() {
 
 //Bracket data
 
+function endTournament() {
+  advanceStep()
+}
 </script>
