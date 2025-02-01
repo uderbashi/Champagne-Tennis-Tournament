@@ -2,7 +2,11 @@
   <main class="container text-white">
     <div class="flex flex-col gap-2">
       <div v-if="step >= ENUM_STEPS.STEP_PLAYER">
-        <CardPlayers @emitPlayers="receivePlayers"/>
+        <CardPlayers 
+          :players="players"
+          :isActive="step===ENUM_STEPS.STEP_PLAYER"
+          @emitPlayers="receivePlayers"
+        />
       </div>  
       <div v-if="step >= ENUM_STEPS.STEP_ROUNDS">
         <div v-for="(roundMatches, index) in allMatches" :key="index">
@@ -18,7 +22,7 @@
       <div v-if="step >= ENUM_STEPS.STEP_BRACKET">
         <CardBracket 
           :matches="bracketMatches" 
-          :isActive="step !== ENUM_STEPS.STEP_FINISH"
+          :isActive="step === ENUM_STEPS.STEP_BRACKET"
           @emitEnd="endTournament"
         />
       </div>
@@ -106,15 +110,13 @@ function advanceStep() {
 }
 
 // Players Data
-function receivePlayers(receivedPlayers) {
-  for(let player of receivedPlayers) {
-    players.value.push(new Player(player, []));
-  }
+function receivePlayers() {
   roundPoints.value = new Array();
   roundPoints.value[0] =  new Array(players.value.length).fill(0);
 
   // copy, then shuffle the players, so we would create random first games
   let firstRoundPlayers = players.value.slice(0);
+  console.log(players.value);
   shuffleArray(firstRoundPlayers)
 
   // split

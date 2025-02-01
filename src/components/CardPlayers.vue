@@ -8,15 +8,15 @@
         class="flex w-full items-center mb-2 justify-center"
       >
         <input
-          v-model="players[index]"
+          v-model="player.nameOfPlayer"
           type="text"
           :placeholder="'Player ' + (index + 1)"
-          :disabled="!isEditing"
+          :disabled="!isActive"
           :class="{'bg-red-400': checkValidity(index) !== 1}"
           class="w-3/4 rounded-md text-black text-center"
         />
         <ion-icon
-          v-if="isEditing"
+          v-if="isActive"
           name="trash"
           title="Remove player"
           style="font-size: 22px"
@@ -25,7 +25,7 @@
         ></ion-icon>
       </div>
 
-      <div v-if="isEditing">
+      <div v-if="isActive">
         <ion-icon
           name="add"
           title="Add player"
@@ -50,23 +50,27 @@
 
 <script setup>
 import { ref, } from "vue";
+import { Player } from "../common/matches.js"
 
 const emit = defineEmits(["emitPlayers",]);
 
-const isEditing = ref(true);
-const players = ref([]);
+const props = defineProps({
+  players: { type: Array, default: ()=>[] },
+  isActive: { type: Boolean }
+});
+
 const confirmMessage = ref("");
 
 // checks validity of player's name (empty or duplicate)
 // returns 1 if the name is valid, a muliplier of 2 if the name is empty, and of 3 if it is a duplicate
 function checkValidity(index) {
   let ret = 1;
-  const name = players.value[index];
+  const name = props.players[index].nameOfPlayer;
 
   if(name === "") { // empty name
     ret *= 2;
   }
-  if( players.value.filter((player) => player === name).length > 1) { // duplicate name
+  if( props.players.filter((player) => player.nameOfPlayer === name).length > 1) { // duplicate name
     ret *= 3;
   }
   return ret;
@@ -78,16 +82,16 @@ function checkValidity(index) {
 function allValid() {
   let ret = 1;
   let msg = "";
-  for (let i = 0; i < players.value.length; i++) {
+  for (let i = 0; i < props.players.length; i++) {
     ret *= checkValidity(i);
   }
-  if (players.value.length % 4 !== 0) {
+  if (props.players.length % 4 !== 0) {
     ret *= 5;
   }
-  if (players.value.length === 0) {
+  if (props.players.length === 0) {
     ret *= 7;
   }
-  if (players.value.length < 8) {
+  if (props.players.length < 8) {
     ret *= 11;
   }
 
@@ -110,16 +114,15 @@ function allValid() {
 }
 
 function addPlayer() {
-  players.value.push("");
+  props.players.push(new Player("", []));
 };
 
 function removePlayer(index) {
-  players.value.splice(index, 1);
+  props.players.splice(index, 1);
 };
 
 function confirmPlayers() {
-  isEditing.value = false;
-  emit("emitPlayers", players.value);
+  emit("emitPlayers");
 };
 </script>
 
