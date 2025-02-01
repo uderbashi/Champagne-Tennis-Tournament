@@ -204,3 +204,13 @@ export function getNextRoundMatches(lastRound, playerList, pointsList) {
     shuffleArray(losers);
     return getMatches(winners, losers);
 }
+
+// takes a player list and point list and creates the matches accorind to the rules:
+// a bracket between 1&8 vs 3&6 and 2&7 vs 4&5.
+export function getInitBracketMatches(playerList, pointsList) {
+    let sortedPlayers = calculateTourPoints(playerList, pointsList, pointsList.length);
+    let matches = [];
+    matches.push(new Match(sortedPlayers[0].player, sortedPlayers[7].player, sortedPlayers[2].player, sortedPlayers[5].player));
+    matches.push(new Match(sortedPlayers[1].player, sortedPlayers[6].player, sortedPlayers[3].player, sortedPlayers[4].player));
+    return matches;
+}

@@ -16,7 +16,10 @@
         </div>
       </div>
       <div v-if="step >= ENUM_STEPS.STEP_BRACKET">
-        <CardBracket />
+        <CardBracket 
+          :matches="bracketMatches" 
+          :isActive="step !== ENUM_STEPS.STEP_FINISH"
+        />
       </div>
     </div>
     <SaveFAB />
@@ -26,7 +29,7 @@
 <script setup>
 // ===== Imports =====
 // Common
-import { shuffleArray, calculateTourPoints, Player, getMatches, getNextRoundMatches } from "../common/matches.js";
+import { shuffleArray, calculateTourPoints, Player, getMatches, getNextRoundMatches, getInitBracketMatches } from "../common/matches.js";
 
 // Componenets
 import CardBracket from "@/components/CardBracket.vue";
@@ -45,6 +48,7 @@ const players = ref([]);
 const roundPoints = ref([]); // array of  int arrays, where every internal array contains the points for each player earned in that round
 const allMatches = ref([]); // array of match arrays
 const matchActive = ref([]); // array of booleans holding whether the match is active or not
+const bracketMatches = ref([]); // an array of matches for the bracket stage
 
 // Constrol state
 function advanceStep() {
@@ -87,7 +91,9 @@ function calculatePoints(round) {
 }
 
 function triggerBracket() {
+  getNextRoundMatches(allMatches.value.at(-1), players.value, roundPoints.value);
   matchActive.value[matchActive.value.length - 1] = false;
+  bracketMatches.value = getInitBracketMatches(players.value, roundPoints.value);
   advanceStep();
 }
 
