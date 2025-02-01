@@ -23,7 +23,7 @@
         />
       </div>
     </div>
-    <SaveFAB />
+    <SaveFAB @emitClick="saveRefs"/>
   </main>
 </template>
 
@@ -50,6 +50,27 @@ const roundPoints = ref([]); // array of  int arrays, where every internal array
 const allMatches = ref([]); // array of match arrays
 const matchActive = ref([]); // array of booleans holding whether the match is active or not
 const bracketMatches = ref([]); // an array of matches for the bracket stage
+
+function saveRefs() {
+  const data = {
+    step: step.value,
+    players: players.value,
+    roundPoints: roundPoints.value,
+    allMatches: allMatches.value,
+    matchActive: matchActive.value,
+    bracketMatches: bracketMatches.value,
+    timestamp: new Date().toISOString()
+  };
+
+  // blob from JSON data
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+
+  // temporary link to trigger the download
+  let link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = data.timestamp + '.json';
+  link.click();
+}
 
 // Constrol state
 function advanceStep() {

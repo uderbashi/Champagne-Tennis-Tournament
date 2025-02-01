@@ -7,9 +7,10 @@
 </template>
 
 <script setup>
-const save = () => {
-  window.alert("Pressed save");
-};
+const emit = defineEmits(["emitClick"]);
+function save() {
+  emit("emitClick");
+}
 </script>
 
 <style scoped>
