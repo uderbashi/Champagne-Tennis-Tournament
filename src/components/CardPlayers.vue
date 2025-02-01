@@ -12,7 +12,11 @@
           type="text"
           :placeholder="'Player ' + (index + 1)"
           :disabled="!isActive"
-          :class="{'bg-red-400': checkValidity(index) !== 1}"
+          :class="{
+            'bg-red-400': checkValidity(index) !== 1,
+            'lastInput': index === players.length - 1
+          }"
+          @keydown.enter="addPlayer"
           class="w-3/4 rounded-md text-black text-center"
         />
         <ion-icon
@@ -49,7 +53,7 @@
 </template>
 
 <script setup>
-import { ref, } from "vue";
+import { ref, nextTick } from "vue";
 import { Player } from "../common/matches.js"
 
 const emit = defineEmits(["emitPlayers",]);
@@ -115,6 +119,14 @@ function allValid() {
 
 function addPlayer() {
   props.players.push(new Player("", []));
+
+  // find the newly created input field and focus it
+  nextTick(() => {
+    const lastInput = document.querySelector(".lastInput");
+    if (lastInput) {
+      lastInput.focus();
+    }
+  });
 };
 
 function removePlayer(index) {
