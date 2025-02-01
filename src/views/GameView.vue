@@ -23,7 +23,7 @@
         />
       </div>
     </div>
-    <SaveFAB @emitClick="saveRefs"/>
+    <SaveFAB @emitClick="saveRefsToFile"/>
   </main>
 </template>
 
@@ -39,7 +39,7 @@ import CardRound from "@/components/CardRound.vue";
 import SaveFAB from "@/components/SaveFAB.vue";
 
 // Vue
-import { ref } from "vue";
+import { ref, onBeforeMount, onUpdated } from "vue";
 
 // ===== Data ===== 
 // References
@@ -62,15 +62,40 @@ function saveRefs() {
     timestamp: new Date().toISOString()
   };
 
-  // blob from JSON data
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  // save to local storage (browser's data)
+  localStorage.setItem("refs", JSON.stringify(data));
 
-  // temporary link to trigger the download
+  return data;
+}
+onUpdated(saveRefs);
+
+function saveRefsToFile() {
+  let data = saveRefs();
+  
+  // create a blob
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  
+  // create a temporary download link
   let link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
   link.download = data.timestamp + '.json';
   link.click();
 }
+
+function loadRefs() {
+  let dataStr = localStorage.getItem("refs");
+  if (!dataStr) {
+    return;
+  }
+  let data = JSON.parse(dataStr);
+  step.value = data.step;
+  players.value = data.players;
+  roundPoints.value = data.roundPoints;
+  allMatches.value = data.allMatches;
+  matchActive.value = data.matchActive;
+  bracketMatches.value = data.bracketMatches;
+}
+onBeforeMount(loadRefs);
 
 // Constrol state
 function advanceStep() {
