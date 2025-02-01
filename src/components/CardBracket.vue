@@ -4,7 +4,7 @@
       <h1 class="text-xl font-semibold">Finals</h1>
       <div class="w-full flex justify-center text-sm">
         <!-- round 1 -->
-        <div class="w-1/3 m-2 felx-col" v-if="matches.length === 2">
+        <div class="w-1/3 m-2 felx-col">
           <div class="w-full felx-col border-2 rounded-md my-2">
             <div class="w-full flex">
               <div class="w-3/4">
@@ -79,7 +79,7 @@
                 v-model="matches[2].team1score"
                 class="w-1/4 mx-2 my-1 rounded-md text-black text-center"
                 style="line-height: 200%"
-                :disabled="matches.length !== 4"
+                :disabled="!isActive"
                 @input="validateScore(2, true)"
               />
             </div>
@@ -93,7 +93,7 @@
                 v-model="matches[2].team2score"
                 class="w-1/4 mx-2 my-1 rounded-md text-black text-center"
                 style="line-height: 200%"
-                :disabled="matches.length !== 4"
+                :disabled="!isActive"
                 @input="validateScore(2, false)"
               />
             </div>
@@ -109,7 +109,7 @@
                 v-model="matches[3].team1score"
                 class="w-1/4 mx-2 my-1 rounded-md text-black text-center"
                 style="line-height: 200%"
-                :disabled="matches.length !== 4"
+                :disabled="!isActive"
                 @input="validateScore(3, true)"
               />
             </div>
@@ -123,7 +123,7 @@
                 v-model="matches[3].team2score"
                 class="w-1/4 mx-2 my-1 rounded-md text-black text-center"
                 style="line-height: 200%"
-                :disabled="matches.length !== 4"
+                :disabled="!isActive"
                 @input="validateScore(3, false)"
               />
             </div>
