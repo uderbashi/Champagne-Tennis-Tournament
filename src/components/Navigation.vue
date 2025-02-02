@@ -20,7 +20,7 @@
           title="Reload last opened game"
           style="font-size: 22px"
           class="text-tennis-offtext hover:text-tennis-text duration-150 cursor-pointer"
-          @click="showModal(markRaw(ModalCreate))"
+          @click="$router.push('game')"
         ></ion-icon>
         <ion-icon
           name="add-circle"

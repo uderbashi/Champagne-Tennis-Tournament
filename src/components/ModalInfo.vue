@@ -70,7 +70,7 @@
       Derbashi in 2023.
     </p>
     <button
-      @click="$emit('close')"
+      @click="$emit('close', false)"
       class="mt-8 py-2 px-6 text-white bg-tennis-primary hover:bg-tennis-secondary"
     >
       Close

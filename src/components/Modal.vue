@@ -20,16 +20,25 @@
 </template>
 
 <script setup>
+import { useRouter } from "vue-router";
 import { modalState } from "../composables/modal";
+
+const router = useRouter()
 const state = modalState();
-const show = (modal) => {
+
+function show(modal) {
   state.content.value = modal;
   state.show();
-};
-const hide = () => {
+}
+
+function hide(isLoaded) {
   state.content.value = null;
   state.hide();
-};
+  if (isLoaded) {
+    router.push("/game");
+  }
+}
+
 defineExpose({
   show,
 });
