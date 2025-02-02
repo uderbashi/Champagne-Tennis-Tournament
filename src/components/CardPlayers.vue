@@ -14,10 +14,12 @@
           :disabled="!isActive"
           :class="{
             'bg-red-400': checkValidity(index) !== 1,
-            'lastInput': index === players.length - 1
+            'lastInput': index === players.length - 1,
+            'hover:w-3/4 focus:outline-none focus:w-3/4': isActive,
           }"
           @keydown.enter="addPlayer"
-          class="w-3/4 rounded-md text-black text-center"
+          class="transition-all duration-300 ease-in-out 
+            w-8/12 self-center rounded-md text-black text-center bg-white"
         />
         <ion-icon
           v-if="isActive"
