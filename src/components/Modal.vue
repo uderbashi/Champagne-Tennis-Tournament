@@ -11,7 +11,7 @@
             v-if="state.isActive.value"
             class="p-4 bg-white text-black self-start mt-32 max-w-screen-md"
           >
-            <component :is="state.content.value" @close="hide" />
+            <component :is="state.content.value" @close="hide" @onClose="hide"/>
           </div>
         </Transition>
       </div>
