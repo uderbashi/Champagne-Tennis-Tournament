@@ -1,6 +1,10 @@
 <template>
   <main class="container text-white">
     <div class="flex flex-col gap-2">
+      <CardTitle
+        :title="title"
+        :timestamp="lastSave"
+      ></CardTitle>
       <div v-if="step >= ENUM_STEPS.STEP_PLAYER">
         <CardPlayers 
           :players="players"
@@ -37,6 +41,7 @@
 import { shuffleArray, calculateTourPoints, Player, getMatches, getNextRoundMatches, getInitBracketMatches } from "../common/matches.js";
 
 // Componenets
+import CardTitle from "@/components/CardTitle.vue";
 import CardBracket from "@/components/CardBracket.vue";
 import CardPlayers from "@/components/CardPlayers.vue";
 import CardRound from "@/components/CardRound.vue";
@@ -48,27 +53,33 @@ import { ref, onBeforeMount, onUpdated } from "vue";
 // ===== Data ===== 
 // References
 const ENUM_STEPS = {STEP_PLAYER: 0, STEP_ROUNDS: 1, STEP_BRACKET: 2, STEP_FINISH: 3}
+const title = ref("Champagne tournament");
+const lastSave = ref("None");
 const step = ref(ENUM_STEPS.STEP_PLAYER)
 const players = ref([]);
 const roundPoints = ref([]); // array of  int arrays, where every internal array contains the points for each player earned in that round
 const allMatches = ref([]); // array of match arrays
 const matchActive = ref([]); // array of booleans holding whether the match is active or not
 const bracketMatches = ref([]); // an array of matches for the bracket stage
+const winners = ref([]);
 
 function saveRefs() {
   const data = {
+    title: title.value,
+    lastSave: new Date().toISOString(),
     step: step.value,
     players: players.value,
     roundPoints: roundPoints.value,
     allMatches: allMatches.value,
     matchActive: matchActive.value,
     bracketMatches: bracketMatches.value,
-    timestamp: new Date().toISOString()
+    winners: winners.value
   };
 
   // save to local storage (browser's data)
   localStorage.setItem("refs", JSON.stringify(data));
 
+  lastSave.value = data.lastSave;
   return data;
 }
 onUpdated(saveRefs);
@@ -82,7 +93,7 @@ function saveRefsToFile() {
   // create a temporary download link
   let link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = data.timestamp + '.json';
+  link.download = data.lastSave + '.json';
   link.click();
 }
 
@@ -92,12 +103,15 @@ function loadRefs() {
     return;
   }
   let data = JSON.parse(dataStr);
+  title.value = data.title;
+  lastSave.value = data.lastSave;
   step.value = data.step;
   players.value = data.players;
   roundPoints.value = data.roundPoints;
   allMatches.value = data.allMatches;
   matchActive.value = data.matchActive;
   bracketMatches.value = data.bracketMatches;
+  winners.value = data.winners;
 }
 onBeforeMount(loadRefs);
 
