@@ -30,6 +30,11 @@
           @emitEnd="endTournament"
         />
       </div>
+      <div v-if="step >= ENUM_STEPS.STEP_FINISH">
+        <CardResults 
+          :winners="winners" 
+        />
+      </div>
     </div>
     <SaveFAB @emitClick="saveRefsToFile"/>
   </main>
@@ -38,13 +43,14 @@
 <script setup>
 // ===== Imports =====
 // Common
-import { shuffleArray, calculateTourPoints, Player, getMatches, getNextRoundMatches, getInitBracketMatches } from "../common/matches.js";
+import { shuffleArray, calculateTourPoints, Player, getMatches, getNextRoundMatches, getInitBracketMatches, getWinners } from "../common/matches.js";
 
 // Componenets
 import CardTitle from "@/components/CardTitle.vue";
-import CardBracket from "@/components/CardBracket.vue";
 import CardPlayers from "@/components/CardPlayers.vue";
 import CardRound from "@/components/CardRound.vue";
+import CardBracket from "@/components/CardBracket.vue";
+import CardResults from "@/components/CardResults.vue";
 import SaveFAB from "@/components/SaveFAB.vue";
 
 // Vue
@@ -183,6 +189,7 @@ function triggerRound() {
 //Bracket data
 
 function endTournament() {
-  advanceStep()
+  winners.value = getWinners(bracketMatches.value);
+  advanceStep();
 }
 </script>

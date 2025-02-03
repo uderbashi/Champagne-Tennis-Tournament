@@ -214,3 +214,15 @@ export function getInitBracketMatches(playerList, pointsList) {
     matches.push(new Match(sortedPlayers[1].player, sortedPlayers[6].player, sortedPlayers[3].player, sortedPlayers[4].player));
     return matches;
 }
+
+export function getWinners(bracketMatches) {
+    let winners = [];
+    for (let i = 2; i <= 3; i++) {
+        let game = bracketMatches[i];
+        winners.push(game.team1score > game.team2score ? game.team1player1 : game.team2player1);
+        winners.push(game.team1score > game.team2score ? game.team1player2 : game.team2player2);
+        winners.push(game.team1score < game.team2score ? game.team1player1 : game.team2player1);
+        winners.push(game.team1score < game.team2score ? game.team1player2 : game.team2player2);
+    }
+    return winners;
+}
