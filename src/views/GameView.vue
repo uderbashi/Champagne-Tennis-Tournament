@@ -97,21 +97,27 @@ function saveRefsToFile() {
   link.click();
 }
 
+function safeLoad(vueRef, value) {
+  if (value !== undefined) {
+    vueRef.value = value;
+  }
+}
+
 function loadRefs() {
   let dataStr = localStorage.getItem("refs");
   if (!dataStr) {
     return;
   }
   let data = JSON.parse(dataStr);
-  title.value = data.title;
-  lastSave.value = data.lastSave;
-  step.value = data.step;
-  players.value = data.players;
-  roundPoints.value = data.roundPoints;
-  allMatches.value = data.allMatches;
-  matchActive.value = data.matchActive;
-  bracketMatches.value = data.bracketMatches;
-  winners.value = data.winners;
+  safeLoad(title, data.title);
+  safeLoad(lastSave, data.lastSave);
+  safeLoad(step, data.step);
+  safeLoad(players, data.players);
+  safeLoad(roundPoints, data.roundPoints);
+  safeLoad(allMatches, data.allMatches);
+  safeLoad(matchActive, data.matchActive);
+  safeLoad(bracketMatches, data.bracketMatches);
+  safeLoad(winners, data.winners);
 }
 onBeforeMount(loadRefs);
 
