@@ -35,7 +35,12 @@ function hide(isLoaded) {
   state.content.value = null;
   state.hide();
   if (isLoaded) {
-    router.push("/game");
+    if (router.currentRoute.value.name === "game") {
+      // If I am not on /game then refresh the page
+      router.go();
+    } else {
+      router.push("/game");
+    }
   }
 }
 
