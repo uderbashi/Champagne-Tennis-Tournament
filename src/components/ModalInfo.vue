@@ -67,7 +67,7 @@
     <p>
       Created with
       <ion-icon name="logo-vue" style="color: #42b883"></ion-icon> by Usama
-      Derbashi in 2023.
+      Derbashi in 2025.
     </p>
     <button
       @click="$emit('close', false)"
