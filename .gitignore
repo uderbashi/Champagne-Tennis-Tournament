@@ -1,5 +1,6 @@
 # unwanted project files
 public/games/*.json
+!public/games/_GameList.json
 
 # Logs
 logs
