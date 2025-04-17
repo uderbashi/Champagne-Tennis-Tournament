@@ -210,8 +210,8 @@ export function getNextRoundMatches(lastRound, playerList, pointsList) {
 export function getInitBracketMatches(playerList, pointsList) {
     let sortedPlayers = calculateTourPoints(playerList, pointsList, pointsList.length);
     let matches = [];
-    matches.push(new Match(sortedPlayers[0].player, sortedPlayers[7].player, sortedPlayers[2].player, sortedPlayers[5].player));
-    matches.push(new Match(sortedPlayers[1].player, sortedPlayers[6].player, sortedPlayers[3].player, sortedPlayers[4].player));
+    matches.push(new Match(sortedPlayers[0].player, sortedPlayers[4].player, sortedPlayers[2].player, sortedPlayers[6].player));
+    matches.push(new Match(sortedPlayers[1].player, sortedPlayers[5].player, sortedPlayers[3].player, sortedPlayers[7].player));
     return matches;
 }
 
