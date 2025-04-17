@@ -28,12 +28,14 @@
       <li>
         After each round pairs are drawn again, consisting of a winner and a
         loser from the previous round. Pairs may not be repeated. Matches are
-        selected randomly.
+        selected randomly. If the number of players is not divisible by 4 
+        to form matches, the players not playing during a round will get 5
+        points each.
       </li>
       <li>
         After enough rounds have been played, the 8 players with the highest
-        scores are taken to play semifinals with fixed pairs: 1&8 vs 3&6 and 2&7
-        vs 4&5.
+        scores are taken to play semifinals with fixed pairs: 1&5 vs 3&7 and 2&6
+        vs 4&8.
       </li>
     </ol>
 
