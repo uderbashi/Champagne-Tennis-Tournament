@@ -16,6 +16,7 @@
         <div v-for="(roundMatches, index) in allMatches" :key="index">
           <CardRound
             :matches="roundMatches"
+            :waiting="roundWaitng[index]"
             :oldScore="calculatePoints(index)"
             :isActive="matchActive[index]"
             @emitTriggerRound="triggerRound"
@@ -64,6 +65,7 @@ const lastSave = ref("None");
 const step = ref(ENUM_STEPS.STEP_PLAYER)
 const players = ref([]);
 const roundPoints = ref([]); // array of  int arrays, where every internal array contains the points for each player earned in that round
+const roundWaitng = ref([["asdf", "fdsa"]]); // array of player name arrays, each array represents a round and inside are the players who are waiting (not playing) that round
 const allMatches = ref([]); // array of match arrays
 const matchActive = ref([]); // array of booleans holding whether the match is active or not
 const bracketMatches = ref([]); // an array of matches for the bracket stage
