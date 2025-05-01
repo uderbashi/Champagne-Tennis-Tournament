@@ -122,6 +122,7 @@ function loadRefs() {
   safeLoad(step, data.step);
   safeLoad(players, data.players);
   safeLoad(roundPoints, data.roundPoints);
+  safeLoad(roundWaitng, data.roundWaitng);
   safeLoad(allMatches, data.allMatches);
   safeLoad(matchActive, data.matchActive);
   safeLoad(bracketMatches, data.bracketMatches);
