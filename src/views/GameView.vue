@@ -65,7 +65,7 @@ const lastSave = ref("None");
 const step = ref(ENUM_STEPS.STEP_PLAYER)
 const players = ref([]);
 const roundPoints = ref([]); // array of  int arrays, where every internal array contains the points for each player earned in that round
-const roundWaitng = ref([["asdf", "fdsa"]]); // array of player name arrays, each array represents a round and inside are the players who are waiting (not playing) that round
+const roundWaitng = ref([]); // array of player name arrays, each array represents a round and inside are the players who are waiting (not playing) that round
 const allMatches = ref([]); // array of match arrays
 const matchActive = ref([]); // array of booleans holding whether the match is active or not
 const bracketMatches = ref([]); // an array of matches for the bracket stage
@@ -154,6 +154,8 @@ function receivePlayers() {
   const half1 = firstRoundPlayers.slice(0, split);
   const half2 = firstRoundPlayers.slice(split);
 
+  // TODO: add random players out
+
   const res = getMatches(half1, half2);
   allMatches.value.push(res);
   matchActive.value.push(true); // make the added game active.
@@ -169,6 +171,7 @@ function calculatePoints(round) {
 }
 
 function triggerBracket() {
+  // TODO: send round waiting players
   getNextRoundMatches(allMatches.value.at(-1), players.value, roundPoints.value);
   matchActive.value[matchActive.value.length - 1] = false;
   bracketMatches.value = getInitBracketMatches(players.value, roundPoints.value);
