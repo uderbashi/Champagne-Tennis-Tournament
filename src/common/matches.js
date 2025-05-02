@@ -163,7 +163,7 @@ export function getMatches(winners, losers) {
     return matches;
 }
 
-export function getNextRoundMatches(lastRound, playerList, pointsList) {
+export function getNextRoundMatches(lastRound, playerList, pointsList, waitingPlayers) {
     let winners = []
     let losers = []
     for (let match of lastRound) {
@@ -197,6 +197,13 @@ export function getNextRoundMatches(lastRound, playerList, pointsList) {
             pointsList[pointsList.length - 1][i] = scoreLoser;
             losers.push(loser);
         }
+    }
+
+    // add 5 points to each player who has waited out and add them to winners pool
+    for (let waiting in waitingPlayers) {
+        let i = playerList.findIndex((player) => player.nameOfPlayer === waiting.nameOfPlayer);
+        pointsList[pointsList.length - 1][i] = 5;
+        winners.push(waiting);
     }
     
     // shuffle and get matches

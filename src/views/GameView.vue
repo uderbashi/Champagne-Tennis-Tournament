@@ -171,15 +171,14 @@ function calculatePoints(round) {
 }
 
 function triggerBracket() {
-  // TODO: send round waiting players
-  getNextRoundMatches(allMatches.value.at(-1), players.value, roundPoints.value);
+  getNextRoundMatches(allMatches.value.at(-1), players.value, roundPoints.value, roundWaitng.value);
   matchActive.value[matchActive.value.length - 1] = false;
   bracketMatches.value = getInitBracketMatches(players.value, roundPoints.value);
   advanceStep();
 }
 
 function triggerRound() {
-  let matches = getNextRoundMatches(allMatches.value.at(-1), players.value, roundPoints.value);
+  let matches = getNextRoundMatches(allMatches.value.at(-1), players.value, roundPoints.value,roundWaitng.value);
   // getNextRoundMatches returns an empty array if it could not make pairing
   if (matches.length === 0) {
     triggerBracket();
