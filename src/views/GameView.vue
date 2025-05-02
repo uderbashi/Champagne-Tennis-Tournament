@@ -148,16 +148,20 @@ function receivePlayers() {
   console.log(players.value);
   shuffleArray(firstRoundPlayers)
 
-  // split
-  const split = Math.ceil(firstRoundPlayers.length / 2);
+  // The split is created so that always the losers bracket will have 
+  // a multiple of two. This ensures that valid games are always 
+  // picked. The rest of the players (max.3) will be waiting for the round
+  // but that logic is handled by the function getMatches.
+  // The formula is (n - (n % 4)) / 2.
+  
+  const split = (firstRoundPlayers.length - (firstRoundPlayers.length % 4)) / 2;
 
-  const half1 = firstRoundPlayers.slice(0, split);
-  const half2 = firstRoundPlayers.slice(split);
+  const smallerGroup = firstRoundPlayers.slice(0, split);
+  const largerGroup = firstRoundPlayers.slice(split);
 
-  // TODO: add random players out
-
-  const res = getMatches(half1, half2);
-  allMatches.value.push(res);
+  const res = getMatches(largerGroup, smallerGroup); // the larger group has to go as winners
+  allMatches.value.push(res.matches);
+  roundWaitng.value.push(res.waiting);
   matchActive.value.push(true); // make the added game active.
 
   advanceStep();
@@ -178,15 +182,16 @@ function triggerBracket() {
 }
 
 function triggerRound() {
-  let matches = getNextRoundMatches(allMatches.value.at(-1), players.value, roundPoints.value,roundWaitng.value);
+  let res = getNextRoundMatches(allMatches.value.at(-1), players.value, roundPoints.value,roundWaitng.value);
   // getNextRoundMatches returns an empty array if it could not make pairing
-  if (matches.length === 0) {
+  if (res.matches.length === 0) {
     triggerBracket();
     return;
   }
   
   matchActive.value[matchActive.value.length - 1] = false;
-  allMatches.value.push(matches);
+  allMatches.value.push(res.matches);
+  roundWaitng.value.push(res.waiting);
   matchActive.value.push(true); // make the added game active.
   roundPoints.value.push(new Array(players.value.length).fill(0)); // add new scores to be filled
 }

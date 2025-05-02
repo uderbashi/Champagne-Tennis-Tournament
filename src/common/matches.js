@@ -160,7 +160,7 @@ export function getMatches(winners, losers) {
         matches.push(new Match(pairs[i].player1, pairs[i].player2, pairs[i + 1].player1, pairs[i + 1].player2));
     }
 
-    return matches;
+    return {matches:matches, waiting:[]};
 }
 
 export function getNextRoundMatches(lastRound, playerList, pointsList, waitingPlayers) {
