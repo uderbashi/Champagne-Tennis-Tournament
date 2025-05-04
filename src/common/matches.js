@@ -201,6 +201,7 @@ export function getNextRoundMatches(lastRound, playerList, pointsList, waitingPl
 
     // add 5 points to each player who has waited out and add them to winners pool
     for (let waiting in waitingPlayers) {
+        waiting.gamesWaited += 1;
         let i = playerList.findIndex((player) => player.nameOfPlayer === waiting.nameOfPlayer);
         pointsList[pointsList.length - 1][i] = 5;
         winners.push(waiting);
