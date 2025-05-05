@@ -36,7 +36,19 @@ export class Player {
     }
 }
 
-// TODO: docs
+/*
+    The Hungarian algorithm assigns rows to columns,
+    it is one of the most popular algorithms to solve similar problems.
+    I am using a library that was written to solve this issue in O(n3).
+    The matrix creates dummy players to match for waiting, and these
+    will have a value of 0, as the algorithm is pulling everything 
+    towards it, menaing they do not have preference to matchh.
+    The plyayers will be either assinged infinity when they have played before
+    therefore making it impossible to match them, or the waiting score,
+    which increases exponentially as the player has not waited outside
+    and resets when the player has just waited out of the game,
+    making that plyaer the most likely to wait out of the players.
+*/
 import { minWeightAssign } from 'munkres-algorithm';
 function hungarianMatch(group1, group2) {
     let dummyName = "__DUMMY__";
