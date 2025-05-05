@@ -91,14 +91,11 @@ function allValid() {
   for (let i = 0; i < props.players.length; i++) {
     ret *= checkValidity(i);
   }
-  if (props.players.length % 4 !== 0) {
+  if (props.players.length < 8) {
     ret *= 5;
   }
   if (props.players.length === 0) {
     ret *= 7;
-  }
-  if (props.players.length < 8) {
-    ret *= 11;
   }
 
   if (ret % 2 === 0 ) {
@@ -108,12 +105,10 @@ function allValid() {
     msg += "Duplicate player names are not allowed. (check red players)\n";
   }
   if (ret % 5 === 0 ) {
-    msg += "The number of players doesn't divide by 4 (matches of pairs cannot be created)\n";
+    msg += "There are not enough players for the finals (the players are less than 8)\n";
   }
   if (ret % 7 === 0 ) {
     msg += "There are no players\n";
-  }if (ret % 11 === 0 ) {
-    msg += "There are not enough players for the finals (the players are less than 8)\n";
   }
   confirmMessage.value = msg;
   return ret;
