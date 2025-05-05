@@ -146,7 +146,6 @@ function receivePlayers() {
 
   // copy, then shuffle the players, so we would create random first games
   let firstRoundPlayers = players.value.slice(0);
-  console.log(players.value);
   shuffleArray(firstRoundPlayers)
 
   // The split is created so that always the losers bracket will have 

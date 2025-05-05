@@ -83,8 +83,6 @@ function hungarianMatch(group1, group2) {
         }
         matrix.push(row);
     }
-    console.log(matrix);
-
     // solve matrix with hungarian
     let pairIndexes = minWeightAssign(matrix).assignments;
 
