@@ -80,7 +80,7 @@
         </div>
       </div>
       <div v-if="waiting.length > 0" class="w-full text-left border-2 border-gray-200 rounded-md shadow-md mt-1">
-        <p class="ml-3 mt-1 text-sm">Players waiting (not playing this round) are:<strong class="ml-1 text-base">{{ waiting.join(",  ") }}</strong>.</p>
+        <p class="ml-3 mt-1 text-sm">Players waiting (not playing this round) are:<strong class="ml-1 text-base">{{ waiting.map(item => item.nameOfPlayer).join(",  ") }}</strong>.</p>
         <p class="ml-3 mb-1 text-sm">Each of these players will get 5 points.</p>
       </div>
       <div v-if="isActive" class="mt-3">
