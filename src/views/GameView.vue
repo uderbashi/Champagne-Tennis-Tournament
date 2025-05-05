@@ -78,6 +78,7 @@ function saveRefs() {
     step: step.value,
     players: players.value,
     roundPoints: roundPoints.value,
+    roundWaitng: roundWaitng.value,
     allMatches: allMatches.value,
     matchActive: matchActive.value,
     bracketMatches: bracketMatches.value,
