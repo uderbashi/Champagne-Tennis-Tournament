@@ -16,6 +16,7 @@
         <div v-for="(roundMatches, index) in allMatches" :key="index">
           <CardRound
             :matches="roundMatches"
+            :waiting="roundWaitng[index]"
             :oldScore="calculatePoints(index)"
             :isActive="matchActive[index]"
             @emitTriggerRound="triggerRound"
@@ -64,6 +65,7 @@ const lastSave = ref("None");
 const step = ref(ENUM_STEPS.STEP_PLAYER)
 const players = ref([]);
 const roundPoints = ref([]); // array of  int arrays, where every internal array contains the points for each player earned in that round
+const roundWaitng = ref([]); // array of player name arrays, each array represents a round and inside are the players who are waiting (not playing) that round
 const allMatches = ref([]); // array of match arrays
 const matchActive = ref([]); // array of booleans holding whether the match is active or not
 const bracketMatches = ref([]); // an array of matches for the bracket stage
@@ -76,6 +78,7 @@ function saveRefs() {
     step: step.value,
     players: players.value,
     roundPoints: roundPoints.value,
+    roundWaitng: roundWaitng.value,
     allMatches: allMatches.value,
     matchActive: matchActive.value,
     bracketMatches: bracketMatches.value,
@@ -120,6 +123,7 @@ function loadRefs() {
   safeLoad(step, data.step);
   safeLoad(players, data.players);
   safeLoad(roundPoints, data.roundPoints);
+  safeLoad(roundWaitng, data.roundWaitng);
   safeLoad(allMatches, data.allMatches);
   safeLoad(matchActive, data.matchActive);
   safeLoad(bracketMatches, data.bracketMatches);
@@ -145,14 +149,20 @@ function receivePlayers() {
   console.log(players.value);
   shuffleArray(firstRoundPlayers)
 
-  // split
-  const split = Math.ceil(firstRoundPlayers.length / 2);
+  // The split is created so that always the losers bracket will have 
+  // a multiple of two. This ensures that valid games are always 
+  // picked. The rest of the players (max.3) will be waiting for the round
+  // but that logic is handled by the function getMatches.
+  // The formula is (n - (n % 4)) / 2.
+  
+  const split = (firstRoundPlayers.length - (firstRoundPlayers.length % 4)) / 2;
 
-  const half1 = firstRoundPlayers.slice(0, split);
-  const half2 = firstRoundPlayers.slice(split);
+  const smallerGroup = firstRoundPlayers.slice(0, split);
+  const largerGroup = firstRoundPlayers.slice(split);
 
-  const res = getMatches(half1, half2);
-  allMatches.value.push(res);
+  const res = getMatches(largerGroup, smallerGroup); // the larger group has to go as winners
+  allMatches.value.push(res.matches);
+  roundWaitng.value.push(res.waiting);
   matchActive.value.push(true); // make the added game active.
 
   advanceStep();
@@ -166,22 +176,23 @@ function calculatePoints(round) {
 }
 
 function triggerBracket() {
-  getNextRoundMatches(allMatches.value.at(-1), players.value, roundPoints.value);
+  getNextRoundMatches(allMatches.value.at(-1), players.value, roundPoints.value, roundWaitng.value);
   matchActive.value[matchActive.value.length - 1] = false;
   bracketMatches.value = getInitBracketMatches(players.value, roundPoints.value);
   advanceStep();
 }
 
 function triggerRound() {
-  let matches = getNextRoundMatches(allMatches.value.at(-1), players.value, roundPoints.value);
+  let res = getNextRoundMatches(allMatches.value.at(-1), players.value, roundPoints.value,roundWaitng.value);
   // getNextRoundMatches returns an empty array if it could not make pairing
-  if (matches.length === 0) {
+  if (res.matches.length === 0) {
     triggerBracket();
     return;
   }
   
   matchActive.value[matchActive.value.length - 1] = false;
-  allMatches.value.push(matches);
+  allMatches.value.push(res.matches);
+  roundWaitng.value.push(res.waiting);
   matchActive.value.push(true); // make the added game active.
   roundPoints.value.push(new Array(players.value.length).fill(0)); // add new scores to be filled
 }

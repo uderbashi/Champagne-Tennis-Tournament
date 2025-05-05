@@ -79,6 +79,10 @@
           </table>
         </div>
       </div>
+      <div v-if="waiting.length > 0" class="w-full text-left border-2 border-gray-200 rounded-md shadow-md mt-1">
+        <p class="ml-3 mt-1 text-sm">Players waiting (not playing this round) are:<strong class="ml-1 text-base">{{ waiting.map(item => item.nameOfPlayer).join(",  ") }}</strong>.</p>
+        <p class="ml-3 mb-1 text-sm">Each of these players will get 5 points.</p>
+      </div>
       <div v-if="isActive" class="mt-3">
         <span :title="confirmMessage">
           <ion-icon
@@ -111,11 +115,10 @@ import { Match } from "../common/matches.js";
 
 const props = defineProps({
   matches: { type: Array, default: ()=>[] },
+  waiting: {type: Array, default: ()=>[]},
   oldScore: { type: Array, default: ()=>[] },
   isActive: { type: Boolean }
 });
-
-//const isActive = computed(() => props.isCardActive);
 
 const emit = defineEmits(["emitTriggerRound", "emitTriggerBracket"]);
 const confirmMessage = ref("");

@@ -32,96 +32,69 @@ export class Player {
     constructor(nameOfPlayer, previouslyPlayed) {
         this.nameOfPlayer = nameOfPlayer;
         this.previouslyPlayed = previouslyPlayed;
+        this.waitingScore = 16;
     }
 }
 
-/*
-Direct implementation of the Hopcroft–Karp algorithm, psuedocode found in:
-https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm#Pseudocode
-with a slight modification that it takes two groups of players (alongside their previous opponents).
-I understand how the algorithm works on paper, but the code implemntation, I am not sure about.
-*/
-function hopcroftKarp(group1, group2) {
-    const NIL = "NIL";
-    let pairU = new Map();
-    let pairV = new Map();
-    let dist = new Map();
+// TODO: docs
+import { minWeightAssign } from 'munkres-algorithm';
+function hungarianMatch(group1, group2) {
+    let dummyName = "__DUMMY__";
 
-    function bfs() {
-        let queue = [];
-        for(let u of group1) {
-            if(pairU.get(u) === NIL) {
-                dist.set(u, 0);
-                queue.push(u);
+    // make sure that group1 is always larger than group 2
+    if (group2.length > group1.length) {
+        [group1, group2] = [group2, group1];
+    }
+
+    // pad group2 with dummies until we get equal numbers of players
+    while (group1.length != group2.length) {
+        group2.push(new Player(dummyName, []));
+    }
+
+    /* 
+        Build cost matricies where:
+        1- all dummies have cost of 0 (as they do not create any bias)
+        2- all winners will get their waiting scores
+        this will give priority to players who have been waiting outside. 
+    */
+    let matrix = [];
+    for (let p1 of group1) {
+        let row = [];
+        for (let p2 of group2) {
+            if (p1.previouslyPlayed.includes(p2.nameOfPlayer)) {
+                row.push(Infinity); // rematches not allowed
+            } else if (p2.nameOfPlayer === dummyName) {
+                row.push(0); // dummy player is always 0
             } else {
-                dist.set(u, Infinity);
+                row.push(p1.waitingScore);
             }
         }
-        dist.set(NIL, Infinity);
+        matrix.push(row);
+    }
+    console.log(matrix);
 
-        while(queue.length > 0) {
-            let u = queue.shift();
-            if(dist.get(u) < dist.get(NIL)) {
-                for(let v of group2) {
-                    if(u.previouslyPlayed.includes(v.nameOfPlayer)) {
-                        continue;
-                    }
-                    if(dist.get(pairV.get(v)) === Infinity) {
-                        dist.set(pairV.get(v), dist.get(u) + 1);
-                        queue.push(pairV.get(v));
-                    }
-                }
-            }
+    // solve matrix with hungarian
+    let pairIndexes = minWeightAssign(matrix).assignments;
+
+    let pairs = [];
+    let waiting = [];
+    for (let [i, j] of pairIndexes.entries()) {
+        if (j === null) {
+            return { pairs: [], waiting: [] }; // if it reached a point of unsolvability
         }
-        return dist.get(NIL) !== Infinity;
-    }
 
-    function dfs(u) {
-        if(u !== NIL) {
-            for(let v of group2) {
-                if(u.previouslyPlayed.includes(v.nameOfPlayer)) {
-                    continue;
-                }
-                if(dist.get(pairV.get(v)) === dist.get(u) + 1) {
-                    if(dfs(pairV.get(v))) {
-                        pairV.set(v, u);
-                        pairU.set(u, v);
-                        return true;
-                    }
-                }
-            }
-            dist.set(u, Infinity);
-            return false;
-        }
-        return true;
-    }
+        let p1 = group1[i];
+        let p2 = group2[j];
 
-    for(let u of group1) {
-        pairU.set(u, NIL);
-    }
-    for(let v of group2) {
-        pairV.set(v, NIL);
-    }
-
-    let matches = 0;
-    let matching = [];
-    while(bfs()) {
-        for(let u of group1) {
-            if(pairU.get(u) === NIL) {
-                if(dfs(u)) {
-                    matches++;
-                }
-            }
+        if (p2.nameOfPlayer === dummyName) {
+            waiting.push(p1);
+        } else {
+            pairs.push({ player1: p1, player2: p2 });
         }
     }
 
-    for(let u of group1) {
-        matching.push({ player1: u, player2: pairU.get(u) });
-    }
-
-    return matching;
+    return { pairs: pairs, waiting: waiting };
 }
-
 
 // Required for the next function.
 export class Match {
@@ -140,30 +113,21 @@ winners and losers are obtained by shallow copying their entries from the main P
 this function returns a match object for the steps to take in.
 */
 export function getMatches(winners, losers) {
-    let pairs = hopcroftKarp(winners, losers);
-
-    // if not everyone can be paired
-    for (let pair of pairs) {
-        if (pair.player1 === "NIL" || pair.player2 === "NIL") {
-            return [];
-        }
-    }
+    let res = hungarianMatch(winners, losers);
     
     // shuffle the pairs
-    for(let i = pairs.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [pairs[i], pairs[j]] = [pairs[j], pairs[i]];
-    }
+    let pairs = res.pairs;
+    shuffleArray(pairs);
 
     let matches = [];
     for(let i = 0; i < pairs.length; i += 2)  {
         matches.push(new Match(pairs[i].player1, pairs[i].player2, pairs[i + 1].player1, pairs[i + 1].player2));
     }
 
-    return matches;
+    return { matches: matches, waiting: res.waiting };
 }
 
-export function getNextRoundMatches(lastRound, playerList, pointsList) {
+export function getNextRoundMatches(lastRound, playerList, pointsList, waitingPlayers) {
     let winners = []
     let losers = []
     for (let match of lastRound) {
@@ -188,15 +152,25 @@ export function getNextRoundMatches(lastRound, playerList, pointsList) {
 
         // add the points to the winners and losers and add them to the main lists
         for (let winner of tempWinners) {
+            winner.waitingScore = winner.waitingScore * 2;
             let i = playerList.findIndex((player) => player.nameOfPlayer === winner.nameOfPlayer);
             pointsList[pointsList.length - 1][i] = scoreWinner;
             winners.push(winner);
         }
         for (let loser of tempLosers) {
+            loser.waitingScore = loser.waitingScore * 2;
             let i = playerList.findIndex((player) => player.nameOfPlayer === loser.nameOfPlayer);
             pointsList[pointsList.length - 1][i] = scoreLoser;
             losers.push(loser);
         }
+    }
+
+    // add 5 points to each player who has waited out and add them to winners pool
+    for (let waiting of waitingPlayers[waitingPlayers.length - 1]) {
+        waiting.waitingScore = 8;
+        let i = playerList.findIndex((player) => player.nameOfPlayer === waiting.nameOfPlayer);
+        pointsList[pointsList.length - 1][i] = 5;
+        winners.push(waiting);
     }
     
     // shuffle and get matches
@@ -206,7 +180,7 @@ export function getNextRoundMatches(lastRound, playerList, pointsList) {
 }
 
 // takes a player list and point list and creates the matches accorind to the rules:
-// a bracket between 1&8 vs 3&6 and 2&7 vs 4&5.
+// a bracket between 1&5 vs 3&7 and 2&6 vs 4&8.
 export function getInitBracketMatches(playerList, pointsList) {
     let sortedPlayers = calculateTourPoints(playerList, pointsList, pointsList.length);
     let matches = [];
