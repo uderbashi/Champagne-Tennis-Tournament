@@ -28,6 +28,7 @@
         <CardBracket 
           :matches="bracketMatches" 
           :isActive="step === ENUM_STEPS.STEP_BRACKET"
+          @emitStep="saveRefs"
           @emitEnd="endTournament"
         />
       </div>
@@ -55,7 +56,7 @@ import CardResults from "@/components/CardResults.vue";
 import SaveFAB from "@/components/SaveFAB.vue";
 
 // Vue
-import { ref, onBeforeMount, onUpdated } from "vue";
+import { ref, onBeforeMount } from "vue";
 
 // ===== Data ===== 
 // References
@@ -91,7 +92,6 @@ function saveRefs() {
   lastSave.value = data.lastSave;
   return data;
 }
-onUpdated(saveRefs);
 
 function saveRefsToFile() {
   let data = saveRefs();
@@ -137,6 +137,7 @@ function advanceStep() {
     return;
   }
   step.value = step.value + 1;
+  saveRefs();
 }
 
 // Players Data
@@ -194,6 +195,7 @@ function triggerRound() {
   roundWaitng.value.push(res.waiting);
   matchActive.value.push(true); // make the added game active.
   roundPoints.value.push(new Array(players.value.length).fill(0)); // add new scores to be filled
+  saveRefs();
 }
 
 //Bracket data
