@@ -28,6 +28,7 @@
         <CardBracket 
           :matches="bracketMatches" 
           :isActive="step === ENUM_STEPS.STEP_BRACKET"
+          @emitStep="saveRefs"
           @emitEnd="endTournament"
         />
       </div>

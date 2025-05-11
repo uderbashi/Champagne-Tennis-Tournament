@@ -165,7 +165,7 @@ const props = defineProps({
   isActive: { type: Boolean }
 });
 
-const emit = defineEmits(["emitEnd"]);
+const emit = defineEmits(["emitStep", "emitEnd"]);
 
 const confirmMessage = ref("");
 
@@ -253,6 +253,8 @@ function triggerFinals() {
     new Match(winner11, winner12, winner21, winner22),
     new Match(loser11, loser12, loser21, loser22),
   );
+
+  emit("emitStep");
 }
 
 function endTournament() {
